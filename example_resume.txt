@@ -1,0 +1,41 @@
+JANE DOE
+Seattle, WA | jane.doe@email.com | (555) 123-4567 | linkedin.com/in/janedoe
+
+PROFESSIONAL SUMMARY
+Results-driven software engineer with 5 years of experience building web applications. Passionate about creating user-friendly solutions and working with modern technologies. Strong problem-solver with excellent communication skills.
+
+EXPERIENCE
+
+Senior Software Developer | Tech Solutions Inc. | Seattle, WA | Jan 2022 - Present
+• Developed multiple web applications for clients using various technologies
+• Worked with team members to deliver projects on time
+• Wrote code for new features and fixed bugs
+• Participated in code reviews and team meetings
+• Helped junior developers learn best practices
+
+Software Developer | Digital Innovations Co. | Seattle, WA | Jun 2019 - Dec 2021
+• Built responsive websites for different clients
+• Used JavaScript and HTML/CSS to create interactive pages
+• Collaborated with designers to implement UI/UX improvements
+• Maintained existing codebase and added new functionality
+• Worked in an agile environment with daily standups
+
+Junior Developer | StartupXYZ | Remote | Jan 2018 - May 2019
+• Assisted senior developers with coding tasks
+• Learned new programming languages and frameworks
+• Fixed bugs and performed testing
+• Attended team meetings and contributed ideas
+
+EDUCATION
+
+Bachelor of Science in Computer Science
+University of Washington | Seattle, WA | 2017
+
+SKILLS
+• Programming: JavaScript, Python, HTML, CSS
+• Tools: Git, VS Code
+• Other: Teamwork, Communication, Problem Solving
+
+PROJECTS
+• Personal Portfolio Website - Built using HTML, CSS, and JavaScript
+• Task Management App - Created a to-do list application
