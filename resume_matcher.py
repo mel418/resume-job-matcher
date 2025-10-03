@@ -14,6 +14,7 @@ from rich.panel import Panel
 from rich.markdown import Markdown
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from dotenv import load_dotenv
+import job_scraper
 
 # Load environment variables from .env file
 load_dotenv()
@@ -227,9 +228,13 @@ def display_results(results: dict):
 
 
 def save_results(results: dict, resume_path: str, job_path: str) -> str:
-    """Save results to a timestamped JSON file."""
+    """Save results to a timestamped JSON file in resume-analysis directory."""
+    # Create directory if it doesn't exist
+    output_dir = Path('resume-analysis')
+    output_dir.mkdir(exist_ok=True)
+
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    output_file = f"resume_analysis_{timestamp}.json"
+    output_file = output_dir / f"resume_analysis_{timestamp}.json"
 
     output_data = {
         "timestamp": datetime.now().isoformat(),
@@ -241,7 +246,7 @@ def save_results(results: dict, resume_path: str, job_path: str) -> str:
     try:
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(output_data, f, indent=2, ensure_ascii=False)
-        return output_file
+        return str(output_file)
     except Exception as e:
         console.print(f"[bold red]❌ Error saving results: {str(e)}[/bold red]")
         return None
@@ -258,20 +263,60 @@ def main():
 
     # Get file paths from user
     resume_path = console.input("[bold]📄 Enter path to resume file: [/bold]").strip()
-    job_path = console.input("[bold]💼 Enter path to job description file: [/bold]").strip()
+    job_input = console.input("[bold]💼 Enter job URL, file path, or paste content (type 'paste'): [/bold]").strip()
 
     console.print()
 
-    # Read files
+    # Read resume
     resume_text = read_file(resume_path)
-    job_text = read_file(job_path)
+
+    # Get API key
+    api_key = get_api_key()
+
+    # Handle job input (URL, file, or paste)
+    if job_input.lower() == 'paste':
+        console.print("[cyan]📋 Paste the job description below. Press Ctrl+Z (Windows) or Ctrl+D (Mac/Linux) then Enter when done:[/cyan]")
+        console.print()
+        lines = []
+        try:
+            while True:
+                line = input()
+                lines.append(line)
+        except EOFError:
+            pass
+        job_text = '\n'.join(lines).strip()
+
+        # Save pasted content
+        job_path = job_scraper.save_job_description("manual_paste", job_text, api_key)
+        console.print(f"[green]✓[/green] Content saved to [cyan]{job_path}[/cyan]")
+
+    elif job_scraper.is_url(job_input):
+        try:
+            console.print("[cyan]🌐 Detected URL - attempting to scrape...[/cyan]")
+            job_path, job_text = job_scraper.scrape_job(job_input, api_key)
+            console.print(f"[green]✓[/green] Job scraped and saved to [cyan]{job_path}[/cyan]")
+        except Exception as e:
+            console.print(f"[yellow]⚠️  {str(e)}[/yellow]")
+            console.print()
+            console.print("[cyan]📋 Please paste the job description below. Press Ctrl+Z (Windows) or Ctrl+D (Mac/Linux) then Enter when done:[/cyan]")
+            console.print()
+            lines = []
+            try:
+                while True:
+                    line = input()
+                    lines.append(line)
+            except EOFError:
+                pass
+            job_text = '\n'.join(lines).strip()
+            job_path = job_scraper.save_job_description(job_input, job_text, api_key)
+            console.print(f"[green]✓[/green] Content saved to [cyan]{job_path}[/cyan]")
+    else:
+        job_path = job_input
+        job_text = read_file(job_path)
 
     console.print(f"[green]✓[/green] Resume loaded ([dim]{len(resume_text)} characters[/dim])")
     console.print(f"[green]✓[/green] Job description loaded ([dim]{len(job_text)} characters[/dim])")
     console.print()
-
-    # Get API key
-    api_key = get_api_key()
 
     # Analyze
     results = analyze_resume_match(resume_text, job_text, api_key)

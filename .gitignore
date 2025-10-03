@@ -41,7 +41,7 @@ ENV/
 *~
 
 # Output files
-resume_analysis_*.json
+resume-analysis/
 
 # OS
 .DS_Store
