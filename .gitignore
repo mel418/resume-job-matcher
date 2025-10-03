@@ -1,6 +1,10 @@
 # Environment variables
 .env
 
+# Personal data directories
+personal-resume/
+job-descriptions/
+
 # Python
 __pycache__/
 *.py[cod]
